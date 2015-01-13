@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" dir="ltr">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>jQuery IMG DragDrop</title>
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<link rel="stylesheet" type="text/css" href="css/screen.css" media="all" />
+<link rel="stylesheet" href="http://alphasis.info/library/javascript/jquery/ui/themes/base/jquery.ui.all.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.simplyscroll.js"></script>
+<script type="text/javascript" src="js/jquery.balloon.js"></script>
+<script type="text/javascript" src="js/jQueryRotate.js"></script>
+<script type="text/javascript" src="js/jquery.zoom.js"></script>
+<script type="text/javascript" src="js/jquery.flexslider.js"></script>
+
+<style>
+<!--
+#jquery-ui-slider-value {
+    border: 0;
+    color: red !important;
+    font-weight: bold;
+    background-color: transparent;
+    margin: 3px;
+}
+#jquery-ui-slider {
+    margin: 0 5px;
+    width: 150px;
+}
+
+#zoom-value {
+    border: 0;
+    color: red !important;
+    font-weight: bold;
+    background-color: transparent;
+    margin: 3px;
+}
+#zoom-slider {
+    margin: 0 5px;
+    width: 150px;
+}
+-->
+</style>
+
+<script type="text/javascript">
+$(function(){
+	$('ul.draglist li').each(function(i){
+
+		// 制御用ナンバリング追加
+		$(this).attr('id','list' + (i + 1).toString());
+		$(this).children('span').attr('id','item' + (i + 1).toString());
+
+		$(this).attr('rel',(i + 1).toString());
+		$(this).children('span').attr('rel',(i + 1).toString());
+
+		$(this).addClass('disposition');
+		
+		$('#item3').css('font-size',"100px");
+
+		// 暗転画像クローン生成
+		var imgClone = $(this).children('.dragparts').children('a').html();
+		$(this).prepend('<span class="imgblank">' + (imgClone) + '</span>');
+		$('.imgblank').css({top:'0',left:'0',position:'absolute',opacity:'0.2'});
+
+		// 「.dragparts」をドラッグ
+		dragParts();
+		function dragParts(){
+			$('.dragparts,.dragparts_drop').draggable({
+				revert:'invalid',
+				zIndex:'1000'
+			});
+		}
+
+		// 「#droparea」エリアにドロップされた時の処理
+		$('#droparea').droppable({
+			accept: '.dragparts',
+			tolerance: 'touch',
+			hoverClass: "areahover",
+			activate: function(ev, ui){
+				var pos = ui.position;
+			},
+			drop: function(ev, ui){
+				ui.draggable.prependTo(this).removeClass('dragparts').addClass('dragparts_drop').css({top:'0',left:'0'});
+				dragParts();
+				// image change
+				alert($("#droparea img").attr("src"));
+				$("#droparea img").attr("src","img/photo13.jpg");
+			}
+		});
+
+		// 「#dragitemlist」エリアにドロップされた時の処理
+		$('#dragitemlist').droppable({
+			accept: '.dragparts_drop',
+			tolerance: 'touch',
+			drop: function(ev, ui){
+				var thisRel = ui.draggable.attr('rel');
+				var adjustRel = thisRel-1;
+				$('.disposition').eq(adjustRel).each(function(){
+					ui.draggable.appendTo(this).removeClass('dragparts_drop').addClass('dragparts').css({top:'0',left:'0'});
+					dragParts();
+				});
+			}
+		});
+
+		var connectCont = $('ul.draglist li').index(this);
+		var numCont = connectCont+1;
+
+		// 「すべて選択」処理
+		$('#allselect').click(function(){
+			$('ul.draglist .dragparts').appendTo('#droparea').removeClass('dragparts').addClass('dragparts_drop');
+		});
+
+		// 「選択クリア」処理
+		$('#listclear').click(function(){
+			$('#item'+numCont).each(function(){
+				var thisHTML = $(this);
+				$('#list'+(numCont)).append(thisHTML);
+				$('.dragparts_drop').addClass('dragparts').removeClass('dragparts_drop');
+			});
+		});
+	});
+	
+	$(function() { //on DOM ready
+		// img slide
+		$("#scroller").simplyScroll({
+        	auto: false,
+			speed: 6
+		});
+		
+		// tooltip for img
+		$('#droparea').showBalloon({contents : '<div id="tooltip">'
+  			                                     +'<p>評価：<input type="text" id="jquery-ui-slider-value" /></p>'
+											     +'<div id="jquery-ui-slider"></div>'
+											     +'<p>倍数：<input type="text" id="zoom-value" value="100"/></p>'
+											     +'<div id="zoom-slider"></div>'
+											   +'</div>',
+								position : "left"});
+		$('#tooltip') .parent().css({'visibility' : 'hidden'}) ;
+
+		$('#droparea').hover(
+			function() {
+				$('#tooltip') .parent().css({'visibility' : 'visible'}) ;
+			},
+			function() {
+				$("#tooltip").hover(
+        			null,
+        			function(){
+            			// #tooltipにもマウス乗っかってない時
+               			$('#tooltip') .parent().css({'visibility' : 'hidden'});
+        			}
+    			);
+			}
+		);
+		                								
+		// img wheel
+		jQuery( '#jquery-ui-slider' ).slider( {
+			range: 'min',
+			value: 0,
+			min: -180,
+			max: 180,
+			step: 5,
+			slide: function( event, ui ) {
+				jQuery( '#jquery-ui-slider-value' ) . val( ui.value + '点' );
+				$("#item3").rotate({ animateTo:ui.value});
+			}
+		} );
+		jQuery( '#jquery-ui-slider-value' ).val( jQuery( '#jquery-ui-slider' ).slider( 'value' ) + '点' );
+		
+		// img zoom
+		jQuery( '#zoom-slider' ).slider({
+			range: 'min',
+			value: 100,
+			min: 50,
+			max: 150,
+			step: 5,
+			slide: function( event, ui ) {
+				jQuery( '#zoom-value' ) . val( ui.value + '倍' );
+				//$('#item3').animate({fontSize: ui.value+"px"}, 1000);
+				$('#item3').css('font-size',ui.value+"px");
+
+				//$('#item3').zoom({magnify:'0.5'});
+				//alert(111);
+			}
+		} );
+		jQuery( '#zoom-value' ).val( jQuery( '#zoom-slider' ).slider( 'value' ) + '倍' );
+
+	});
+	
+	$("#item3 img").each(function() {
+		var width = $(this).width()/100 + "em";
+		var height = $(this).height()/100 + "em";
+		$(this).css("width",width);
+		$(this).css("height",height);
+	//	alert(height);
+	});
+	
+	$(function(){
+      SyntaxHighlighter.all();
+    });
+    $(window).load(function(){
+      $('.flexslider').flexslider({
+        animation: "slide",
+        animationLoop: false,
+        itemWidth: 210,
+        itemMargin: 5,
+        pausePlay: false,
+		minItems: 2,
+		maxItems: 2,
+        start: function(slider){
+          $('body').removeClass('loading');
+        }
+      });
+    });
+	
+});
+</script>
+</head>
+
+<body>
+<h1>jQuery IMG DragDrop</h1>
+
+<div id="container">
+
+<div id="main" role="main">
+      <section class="slider">
+        <div class="flexslider carousel">
+          <ul class="slides">
+            <li>
+				<div id="droparea"><div>
+  	    	</li>
+  	    	<li>
+				<div>
+					<h1>2</h1>
+				<div>
+  	    	</li>
+  	    	<li>
+				<div>
+					<h1>3</h1>
+				<div>
+  	    	</li>
+			<li>
+				<div>
+					<h1>4</h1>
+				<div>
+  	    	</li>
+			<li>
+				<div>
+					<h1>5</h1>
+				<div>
+  	    	</li>
+			<li>
+				<div>
+					<h1>6</h1>
+				<div>
+  	    	</li>
+  	    	<li>
+				<div>
+					<h1>7</h1>
+				<div>
+  	    	</li>
+			<li>
+				<div>
+					<h1>8</h1>
+				<div>
+  	    	</li>
+  	    	<li>
+  	    	    <img src="img/kitchen_adventurer_caramel.jpg" />
+  	    	</li>
+          </ul>
+        </div>
+      </section>
+	</div>
+
+<!-- <div id="droparea"></div> -->
+<div id="dragitemlist">
+<ul class="draglist" id="scroller">
+<li><span class="dragparts"><a href="#"><img src="img/photo01.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo02.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo03.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo04.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo05.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo06.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo07.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo08.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo09.jpg" width="100" height="100" alt="" /></a></span></li>
+<li><span class="dragparts"><a href="#"><img src="img/photo10.jpg" width="100" height="100" alt="" /></a></span></li>
+</ul>
+</div><!--/#draglist-->
+
+</div><!--/#container-->
+
+<h2>COPYRIGHT &copy; <a href="http://black-flag.net/">BLACKFLAG.NET</a> ALL RIGHTS RESERVED.</h2>
+</body>
+</html>

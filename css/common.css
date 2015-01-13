@@ -1,0 +1,121 @@
+@charset "utf-8";
+
+/* =======================================
+
+	CommonElements
+
+======================================= */
+body {
+	font-size: 100%;
+	line-height: 140%;
+	font-family: Arial,Helvetica,sans-serif;
+	color: #000;
+	text-align: center;
+	background: #fff;
+}
+
+a:link { text-decoration:none; color: #000;}
+a:visited { text-decoration:none; color: #000;}
+a:active { text-decoration:none; color: #000;}
+a:hover { text-decoration:none; color: #000;}
+
+h1 {
+	margin-bottom: 20px;
+	padding: 10px 0;
+	background: #000;
+	color: #fff;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+}
+h2 {
+	padding: 30px 0;
+	width: 100%;
+	font-size: 12px;
+}
+
+#container {
+	margin: 0 auto;
+	width: 530px;
+	text-align: left;
+}
+
+/* .dragparts / .dragparts_drop
+--------------------------- */
+.dragparts,
+.dragparts_drop {
+	top: 0;
+	left: 0;
+	width: 100px;
+	height: 100px;
+	display: inline-block;
+	overflow: hidden;
+	position: absolute;
+}
+
+/* #dragitemlist
+--------------------------- */
+#dragitemlist {
+	margin-top: 30px;
+	width: 600px;
+	text-align: left;
+	position: relative;
+}
+
+#dragitemlist ul.draglist {
+	margin-left: 2px;
+	width: 100%;
+}
+
+#dragitemlist ul.draglist li {
+	margin: 0 5px 5px 0;
+	width: 100px;
+	height: 100px;
+	display: inline;
+	float: left;
+	position: relative;
+}
+
+/* #droparea
+--------------------------- */
+#droparea {
+	padding: 5px 0 0 5px;
+	min-height: 250px;
+	background: #ddd;
+}
+
+#droparea.areahover {
+	background: #666;
+}
+
+#droparea .dragparts_drop {
+	margin: 0;
+	padding: 0 5px 5px 0;
+	position: relative;
+}
+
+/* #actionarea
+--------------------------- */
+#actionarea {
+	padding: 10px 0;
+}
+
+#allselect,
+#listclear {
+	padding: 0 10px;
+}
+
+/* =======================================
+	ClearFixElements
+======================================= */
+#dragitemlist ul:after {
+	content: ".";
+	height: 0;
+	clear: both;
+	display: block;
+	visibility: hidden;
+}
+#dragitemlist ul {
+	display: inline-block;
+}
+
