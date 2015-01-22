@@ -84,7 +84,7 @@ $(function(){
 				ui.draggable.prependTo(this).removeClass('dragparts').addClass('dragparts_drop').css({top:'0',left:'0'});
 				dragParts();
 				// image change
-				alert($("#droparea img").attr("src"));
+				//alert($("#droparea img").attr("src"));
 				$("#droparea img").attr("src","img/photo13.jpg");
 			}
 		});
@@ -135,7 +135,7 @@ $(function(){
 											     +'<p>倍数：<input type="text" id="zoom-value" value="100"/></p>'
 											     +'<div id="zoom-slider"></div>'
 											   +'</div>',
-								position : "left"});
+								offsetX: 590, offsetY: -150});
 		$('#tooltip') .parent().css({'visibility' : 'hidden'}) ;
 
 		$('#droparea').hover(
@@ -221,56 +221,23 @@ $(function(){
 <h1>jQuery IMG DragDrop</h1>
 
 <div id="container">
-
-<div id="main" role="main">
+  <div id="main" role="main">
       <section class="slider">
         <div class="flexslider carousel">
           <ul class="slides">
-            <li>
-				<div id="droparea"><div>
-  	    	</li>
-  	    	<li>
-				<div>
-					<h1>2</h1>
-				<div>
-  	    	</li>
-  	    	<li>
-				<div>
-					<h1>3</h1>
-				<div>
-  	    	</li>
-			<li>
-				<div>
-					<h1>4</h1>
-				<div>
-  	    	</li>
-			<li>
-				<div>
-					<h1>5</h1>
-				<div>
-  	    	</li>
-			<li>
-				<div>
-					<h1>6</h1>
-				<div>
-  	    	</li>
-  	    	<li>
-				<div>
-					<h1>7</h1>
-				<div>
-  	    	</li>
-			<li>
-				<div>
-					<h1>8</h1>
-				<div>
-  	    	</li>
-  	    	<li>
-  	    	    <img src="img/kitchen_adventurer_caramel.jpg" />
-  	    	</li>
+            <li><div id="droparea"><div></li>
+  	    	<li><div><h1>2</h1><div></li>
+  	    	<li><div><h1>3</h1><div></li>
+  	    	<li><div><h1>4</h1><div></li>
+  	    	<li><div><h1>5</h1><div></li>
+  	    	<li><div><h1>6</h1><div></li>
+  	    	<li><div><h1>7</h1><div></li>
+  	    	<li><div><h1>8</h1><div></li>
+  	    	<li><img src="img/kitchen_adventurer_caramel.jpg" /></li>
           </ul>
         </div>
       </section>
-	</div>
+  </div>
 
 <!-- <div id="droparea"></div> -->
 <div id="dragitemlist">
